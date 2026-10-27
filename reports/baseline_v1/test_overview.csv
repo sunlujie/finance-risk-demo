@@ -1,0 +1,2 @@
+﻿model_version,evaluation_scope,step_min,step_max,transaction_count,fraud_count,fraud_rate,threshold,ap,roc_auc
+baseline_v1_A_base_d91b6f96e87e,test,632,743,89466,1252,0.01399414302640109,0.086029357778133447,0.49832986590315437,0.94163132716540121

@@ -1,0 +1,3 @@
+﻿policy,transaction_count,fraud_count,alert_count,alert_rate,precision,recall,f1,tp,fp,fn,tn,model_version,budget_ratio,cutoff_score,cutoff_tie_count,selected_at_cutoff
+validation_threshold,89466,1252,594,0.0066393937361679299,0.73905723905723908,0.35063897763578272,0.47562296858071507,439,155,813,88059,baseline_v1_A_base_d91b6f96e87e,,,,
+top_1_percent,89466,1252,894,0.0099926228958487021,0.61185682326621926,0.43690095846645366,0.50978564771668222,547,347,705,87867,baseline_v1_A_base_d91b6f96e87e,0.01,0.017002308386073695,4,4
