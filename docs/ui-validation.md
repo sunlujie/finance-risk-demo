@@ -36,9 +36,19 @@
 
 ## 资产与限制
 
-截图、测试脚本、下载样本与逐字节比较数据保存在仓库 `work/`，不提交临时资产。
+测试脚本、下载样本与逐字节比较数据保存在仓库 `work/`。截图交付副本及下载包保存在 `docs/ui-screenshots/`，下载包内含原始截图和 SHA-256 清单。
 四页对比：`before-0.png` 至 `before-3.png`、`after-0.png` 至 `after-3.png`。
 另有评分结果、错误提示、768px 视口截图。
 
-没有验证 local 模式 FastAPI、线上部署、所有编码/10 MB/100,000 行边界、所有浏览器与手机尺寸。本次验证为展示模式与构造 CSV，不能证明模型真实金融场景效果。
+当前仓库没有 FastAPI 服务端实现。风险列表中仅保留了 APP_MODE=local 时调用 /alerts 和 /transactions/{tx_id} 的客户端代码；这不是已完成、可用或已验证的功能。本次验证使用 APP_MODE=demo，直接读取 DuckDB，不依赖 FastAPI。未验证线上部署、所有编码/10 MB/100,000 行边界、所有浏览器与手机尺寸。本次验证为展示模式与构造 CSV，不能证明模型真实金融场景效果。
 任务指定 `/codex/.../output` 目录在此环境不可创建；普通和提权命令均返回文件系统权限错误。截图保留在上述工作目录并在会话中展示。
+
+
+## 交付复核
+
+`cba50af` 是首次界面修改的本地提交，随后已实际通过 Git 推送到 GitHub 的 `ui/financial-dashboard` 分支。没有合并主分支或修改部署设置。
+
+云端 Streamlit 进程监听 0.0.0.0:8501，健康检查返回 ok；已使用共享云端 Chrome 原生窗口打开并目视确认概览正常显示。localhost 属于云端环境，用户应通过当前任务的 Desktop 面板操作该浏览器，不能将其当作用户本机可访问链接。
+
+仓库：https://github.com/sunlujie/finance-risk-demo/tree/ui/financial-dashboard
+截图下载：https://github.com/sunlujie/finance-risk-demo/raw/refs/heads/ui/financial-dashboard/docs/ui-screenshots/finance-risk-ui-screenshots.zip
