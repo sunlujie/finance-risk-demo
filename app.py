@@ -1,3 +1,4 @@
+from src.ui import setup, table
 
 from src.app_config import DB_PATH
 import duckdb
@@ -14,8 +15,9 @@ st.set_page_config(
     layout="wide",
 )
 
-st.title("金融交易风险监测平台")
-st.subheader("交易运营概览")
+setup("OVERVIEW")
+
+st.title("交易运营概览")
 
 st.caption(
     "PaySim模拟数据｜展示所选时段的历史交易汇总｜金额单位沿用数据集"
@@ -143,15 +145,18 @@ hourly = hourly.reindex(
     fill_value=0,
 )
 
-st.subheader("每小时交易笔数")
-st.line_chart(
-    hourly.rename(columns={"tx_count": "交易笔数"})[["交易笔数"]]
-)
+trend_count, trend_amount = st.columns(2, gap="large")
+with trend_count:
+    st.subheader("每小时交易笔数")
+    st.line_chart(
+        data=hourly.rename(columns={"tx_count": "交易笔数"})[["交易笔数"]], height=280, color="#60A5FA"
+    )
 
-st.subheader("每小时交易金额")
-st.line_chart(
-    hourly.rename(columns={"tx_amount": "交易金额"})[["交易金额"]]
-)
+with trend_amount:
+    st.subheader("每小时交易金额")
+    st.line_chart(
+        data=hourly.rename(columns={"tx_amount": "交易金额"})[["交易金额"]], height=280, color="#60A5FA"
+    )
 
 # 将不同时段合并，得到各交易类型的汇总
 by_type = (
@@ -166,7 +171,7 @@ by_type["count_share_pct"] = (
 
 st.subheader("各类型交易笔数")
 st.bar_chart(
-    by_type.rename(columns={"tx_count": "交易笔数"})[["交易笔数"]]
+    data=by_type.rename(columns={"tx_count": "交易笔数"})[["交易笔数"]], height=260, color="#60A5FA"
 )
 
 st.subheader("各类型交易汇总")
@@ -183,7 +188,7 @@ display_table = (
     )
 )
 
-st.dataframe(
+table(
     display_table,
     hide_index=True,
 )
@@ -194,3 +199,5 @@ st.download_button(
     file_name="transaction_type_summary.csv",
     mime="text/csv",
 )
+
+st.caption("导出范围：当前小时及交易类型筛选下的类型汇总，CSV UTF-8 格式。")
