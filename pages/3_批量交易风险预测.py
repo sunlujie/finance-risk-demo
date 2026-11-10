@@ -1,3 +1,4 @@
+from src.ui import setup, table
 from pathlib import Path
 from io import BytesIO
 import hashlib
@@ -148,6 +149,8 @@ st.set_page_config(
     layout="wide",
 )
 
+setup("BATCH SCORING")
+
 st.title("批量交易风险预测")
 
 st.info(
@@ -188,6 +191,7 @@ st.caption(
     f"固定告警阈值：{threshold:.6f}"
 )
 
+st.caption("流程：① 准备 CSV → ② 上传并检查 → ③ 评分与导出")
 st.subheader("1. 准备交易文件")
 
 st.write(
@@ -224,11 +228,14 @@ uploaded = st.file_uploader(
     "上传交易 CSV（最多 10 MB、100,000 笔）",
     type=["csv"],
     key="transaction_csv_upload",
+    max_upload_size=10,
+    help="CSV UTF-8 或 GB18030；最多 100,000 笔。上传后先检查，点击开始预测后才评分。",
 )
 
 if uploaded is None:
     st.session_state.pop(RESULT_KEY, None)
     st.session_state.pop(CONTEXT_KEY, None)
+    st.info("等待上传 · 先下载示例模板，填写交易后上传；检查通过后即可开始预测。")
     st.stop()
 
 if uploaded.size > MAX_FILE_BYTES:
@@ -300,7 +307,7 @@ if "tx_id" not in raw.columns:
         "文件未提供 tx_id，已按记录顺序生成本批次交易编号。"
     )
 st.success(f"检查通过，共 {len(data):,} 笔交易。")
-st.dataframe(data.head(20), hide_index=True)
+table(data.head(20), hide_index=True)
 st.caption("这里只预览前 20 笔，预测将处理全部通过检查的交易。")
 
 if st.button("开始预测", type="primary"):
@@ -322,6 +329,7 @@ if RESULT_KEY not in st.session_state:
 
 result = st.session_state[RESULT_KEY]
 
+st.success(f"评分完成 · 本批 {len(result):,} 笔交易，可在下方筛选并导出全部结果。")
 st.subheader("3. 查看预测结果")
 
 alert_count = int(result["is_alert"].sum())
@@ -348,7 +356,7 @@ view = view.sort_values(
 )
 
 st.write(f"符合当前筛选条件：{len(view):,} 笔。")
-st.dataframe(view.head(1000), hide_index=True)
+table(view.head(1000), hide_index=True)
 st.caption("表格最多展示 1,000 笔；下方下载包含本批全部预测结果。")
 
 st.download_button(
@@ -361,3 +369,5 @@ st.download_button(
     mime="text/csv",
     key="download_uploaded_predictions",
 )
+
+st.caption("导出范围：本批全部交易，包含风险分数、固定阈值、告警标记和模型版本；不受上方仅看告警筛选影响。")

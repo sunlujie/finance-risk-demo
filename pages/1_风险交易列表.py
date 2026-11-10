@@ -1,3 +1,4 @@
+from src.ui import setup, table
 
 import json
 from urllib.error import HTTPError, URLError
@@ -16,6 +17,8 @@ st.set_page_config(
     page_icon="🔎",
     layout="wide",
 )
+
+setup("RISK EXPLORER")
 
 st.title("风险交易列表")
 
@@ -286,7 +289,7 @@ if risk_list.empty:
     st.info("当前筛选条件下没有交易，请调整筛选条件。")
     st.stop()
 
-st.dataframe(
+table(
     risk_list,
     hide_index=True,
 )
@@ -380,7 +383,7 @@ else:
     history_display = history.iloc[0].rename("数值").to_frame()
     history_display.index.name = "历史特征"
 
-    st.dataframe(history_display)
+    table(history_display)
 
 st.caption(
     "历史统计仅使用当前交易小时之前的记录。"

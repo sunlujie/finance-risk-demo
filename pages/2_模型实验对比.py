@@ -1,3 +1,4 @@
+from src.ui import setup, table
 from pathlib import Path
 
 import pandas as pd
@@ -13,6 +14,8 @@ st.set_page_config(
     page_icon="📈",
     layout="wide",
 )
+
+setup("MODEL PERFORMANCE")
 
 st.title("模型实验对比")
 
@@ -72,7 +75,7 @@ split_display = split_display[
     }
 )
 
-st.dataframe(
+table(
     split_display,
     hide_index=True,
 )
@@ -120,7 +123,7 @@ metric_display = metric_display.rename(
     }
 )
 
-st.dataframe(
+table(
     metric_display,
     hide_index=True,
 )
@@ -198,7 +201,7 @@ budget_display = budget_display.rename(
     }
 )
 
-st.dataframe(
+table(
     budget_display,
     hide_index=True,
 )
@@ -209,7 +212,7 @@ chart_data = (
     .rename(columns={"TP": "发现欺诈笔数"})
 )
 
-st.bar_chart(chart_data)
+st.bar_chart(chart_data, height=280, color="#60A5FA")
 comparison_by_model = selected_comparison.set_index("model")
 
 tp_a = int(comparison_by_model.loc["A_base", "TP"])
@@ -240,7 +243,7 @@ with st.expander("查看审核边界的同分情况"):
         "selected_at_cutoff",
     ]
 
-    st.dataframe(
+    table(
         selected_comparison[tie_columns],
         hide_index=True,
     )
@@ -391,7 +394,7 @@ else:
         "tn": "正确排除 TN",
     })
 
-    st.dataframe(display, hide_index=True)
+    table(display, hide_index=True)
 
     st.caption(
         "精确率：告警交易中有多少是真的欺诈；"
